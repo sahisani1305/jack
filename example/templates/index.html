@@ -3,58 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <title>? ? ? ?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            font-family: 'Courier New', Courier, monospace; /* Fallback font */
             margin: 0;
             padding: 0;
+            background: linear-gradient(135deg, #000000, #1a1a1a); /* Dark gradient background */
+            color: #00ff00; /* Neon green text */
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Align the content vertically */
             height: 100vh;
-        }
-
-        header {
+            overflow: hidden;
             text-align: center;
-            padding: 50px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
-            color: #444;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .slot-machine {
+            display: flex;
+            gap: 30px; /* Increased space between reels */
         }
 
-        .links a {
-            color: #0073e6;
-            text-decoration: none;
+        .reel {
+            width: 250px; /* Increased size of the reel */
+            height: 250px; /* Increased size of the reel */
+            background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent dark background */
+            border: 3px solid #00ff00; /* Thicker border */
+            border-radius: 15px; /* Rounded corners */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide the numbers outside the box */
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7); /* Increased shadow */
+            font-family: 'Press Start 2P', monospace; /* Applying the hacker font */
+        }
+
+        .number {
+            font-size: 150px; /* Extra large font size for numbers */
             font-weight: bold;
-            margin: 0 10px;
-            transition: color 0.3s ease;
+            color: #00ff00; /* Neon green color */
+            line-height: 1; /* Prevent extra space between lines */
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glow effect for numbers */
         }
 
-        .links a:hover {
-            color: #005bb5;
+        .word {
+            font-size: 150px; /* Large font size for letters */
+            font-weight: bold;
+            color: #00ff00; /* Neon green color */
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glow effect for letters */
+        }
+
+        /* New style for the paragraph */
+        #welcomeMessage {
+            font-family: 'Press Start 2P', monospace; /* Cyberpunk font */
+            font-size: 40px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            margin-top: 30px; /* Add space between the slot machine and the text */
+            display: none; /* Initially hidden */
+            opacity: 0; /* Initially invisible */
+            animation: fadeInFromBelow 2s forwards; /* Apply fade-in effect from below */
+            text-align: center;
+        }
+
+        /* Animation for fade-in effect from below */
+        @keyframes fadeInFromBelow {
+            0% {
+                opacity: 0;
+                transform: translateY(30px); /* Start from below */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0); /* End at normal position */
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Hello, World!</h1>
-        <p>Welcome to my project. I'm Mohammed Shaik Sahil. The template is ready to be hosted on vercel with the staticfiles Check out my links below:</p>
-        <div class="links">
-            <a href="https://www.linkedin.com/in/mdshaiksahil" target="_blank">LinkedIn</a>
-            <a href="https://sahisani1305.github.io/portfolio/" target="_blank">Portfolio</a>
-            <a href="https://www.instagram.com/sahil_shaikz" target="_blank">Instagram</a>
-        </div>
-    </header>
+
+    <div class="slot-machine">
+        <div class="reel" id="reel1"></div>
+        <div class="reel" id="reel2"></div>
+        <div class="reel" id="reel3"></div>
+        <div class="reel" id="reel4"></div>
+    </div>
+
+    <!-- Hidden paragraph that will be displayed after "JACK" is shown -->
+    <p id="welcomeMessage">Welcome to my world</p>
+
+    <script>
+        // Numbers and the word "JACK"
+        const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        const targetWord = ['J', 'A', 'C', 'K'];
+
+        // Function to get a random number
+        function getRandomNumber() {
+            return numbers[Math.floor(Math.random() * numbers.length)];
+        }
+
+        // Function to get the next letter from "JACK"
+        function getNextTargetLetter(index) {
+            return targetWord[index % targetWord.length];
+        }
+
+        let reelInterval;
+        let reelStatus = [false, false, false, false]; // Keep track of whether each reel has shown its letter
+        let letterIndex = 0; // To track the current letter of "JACK" to display
+        let previousNumbers = ['', '', '', '']; // Keep track of previous numbers for each reel
+
+        // Function to update the text content of each reel
+        function updateReels() {
+            const reels = document.querySelectorAll('.reel');
+            
+            reels.forEach((reel, index) => {
+                // If the reel has not yet shown the letter, show random numbers
+                if (!reelStatus[index]) {
+                    let newNumber;
+                    do {
+                        newNumber = getRandomNumber(); // Get a new random number
+                    } while (newNumber === previousNumbers[index]); // Ensure the new number is not the same as the previous one
+
+                    reel.innerHTML = `<span class="number">${newNumber}</span>`; // Use span for styling
+                    previousNumbers[index] = newNumber; // Update the previous number for that reel
+                }
+            });
+        }
+
+        // Start updating reels with random numbers at high speed
+        reelInterval = setInterval(updateReels, 100);
+
+        // Function to stop the slot at each individual slot
+        function stopReelsAtRandom() {
+            if (letterIndex < 4) {
+                // Stop the next reel
+                const reels = document.querySelectorAll('.reel');
+                reels[letterIndex].innerHTML = `<span class="word">${targetWord[letterIndex]}</span>`; // Use span for styling
+                reelStatus[letterIndex] = true;
+                letterIndex++;
+            }
+        }
+
+        // Start showing "JACK" in each reel after 1.5 seconds, each letter takes at least 1 second
+        setTimeout(() => {
+            // Start displaying "JACK" letters in sequence
+            const stopInterval = setInterval(() => {
+                stopReelsAtRandom();
+                if (letterIndex === 4) {
+                    clearInterval(stopInterval); // Stop once all slots have reached 'JACK'
+                    // Display the welcome message after all reels have stopped
+                    setTimeout(() => {
+                        const welcomeMessage = document.getElementById('welcomeMessage');
+                        welcomeMessage.style.display = 'block'; // Make the paragraph visible
+                        
+                        // Trigger text-to-speech as soon as the message is visible
+                        const msg = new SpeechSynthesisUtterance('Welcome to my world');
+                        window.speechSynthesis.speak(msg); // Speak the message
+                    }, 500); // Delay the visibility of the paragraph slightly
+                }
+            }, 1000); // Each letter will appear after 1 second
+        }, 1500); // Wait for 1.5 seconds before starting to show "JACK"
+    </script>
+
 </body>
 </html>
