@@ -7,15 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace; /* Fallback font */
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #000000, #1a1a1a); /* Dark gradient background */
-            color: #00ff00; /* Neon green text */
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: #00ff00;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; /* Align the content vertically */
+            flex-direction: column;
             height: 100vh;
             overflow: hidden;
             text-align: center;
@@ -23,103 +23,128 @@
 
         .slot-machine {
             display: flex;
-            gap: 30px; /* Increased space between reels */
-            flex-wrap: wrap; /* Allow reels to wrap on smaller screens */
-            justify-content: center; /* Center reels horizontally */
+            flex-direction: row; /* Adjusted */
+            gap: 2vw; /* Adjust gap to be relative to screen width */
+            justify-content: center;
+            align-items: center;
+            padding: 2vw; /* Added relative padding */
+            box-sizing: border-box;
         }
 
         .reel {
-            width: 250px; /* Increased size of the reel */
-            height: 250px; /* Increased size of the reel */
-            background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent dark background */
-            border: 3px solid #00ff00; /* Thicker border */
-            border-radius: 15px; /* Rounded corners */
+            width: 20vw; /* Reels width relative to screen width */
+            height: 20vw; /* Reels height relative to screen width */
+            max-width: 250px; /* Maximum size to avoid it being too large on wide screens */
+            max-height: 250px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Hide the numbers outside the box */
             position: relative;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7); /* Increased shadow */
-            font-family: 'Press Start 2P', monospace; /* Applying the hacker font */
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+            font-family: 'Press Start 2P', monospace;
+            flex-shrink: 0; /* Prevent shrinks */
+            overflow: hidden;
         }
 
-        .number {
-            font-size: 150px; /* Extra large font size for numbers */
+        .number, .word {
+            font-size: 10vw; /* Font size relative to viewport width */
             font-weight: bold;
-            color: #00ff00; /* Neon green color */
-            line-height: 1; /* Prevent extra space between lines */
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glow effect for numbers */
+            color: #00ff00;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
         }
 
-        .word {
-            font-size: 150px; /* Large font size for letters */
-            font-weight: bold;
-            color: #00ff00; /* Neon green color */
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glow effect for letters */
-        }
-
-        /* New style for the paragraph */
         #welcomeMessage {
-            font-family: 'Press Start 2P', monospace; /* Cyberpunk font */
-            font-size: 40px;
+            font-family: 'Press Start 2P', monospace;
             color: #00ff00;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
-            margin-top: 30px; /* Add space between the slot machine and the text */
-            display: none; /* Initially hidden */
-            opacity: 0; /* Initially invisible */
-            animation: fadeInFromBelow 2s forwards; /* Apply fade-in effect from below */
-            text-align: center;
+            margin-top: 2vw;
+            display: none;
+            white-space: pre-wrap; /* Allow line breaks with spaces */
+            overflow: hidden;
+            line-height: 2; /* Space between lines */
         }
 
-        /* Animation for fade-in effect from below */
-        @keyframes fadeInFromBelow {
-            0% {
-                opacity: 0;
-                transform: translateY(30px); /* Start from below */
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0); /* End at normal position */
+        .typing-active::after {
+            content: "";
+            display: inline-block;
+            background-color: #00ff00;
+            width: 0.15em;
+            height: 1em;
+            animation: blink 1s steps(2, start) infinite;
+            vertical-align: center;
+            margin-left: 0.1ch;
+        }
+
+        @keyframes blink {
+            to {
+                visibility: hidden;
             }
         }
 
-        /* Media Queries for mobile responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .reel {
-                width: 180px; /* Smaller reel size on mobile */
-                height: 180px;
+                width: 18vw;
+                height: 18vw;
             }
 
             .number, .word {
-                font-size: 100px; /* Adjust the font size for mobile */
+                font-size: 8vw;
             }
 
             #welcomeMessage {
-                font-size: 30px; /* Smaller welcome message font size on mobile */
+                font-size: 2vw; /* Adjusted for tablets */
             }
 
             .slot-machine {
-                flex-direction: column; /* Stack the reels vertically on smaller screens */
-                gap: 20px; /* Adjust space between stacked reels */
+                gap: 4vw;
             }
         }
 
-        /* Media Queries for very small screens (portrait mode on phones) */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .slot-machine {
+                flex-direction: column;
+                gap: 2vw;
+            }
+
             .reel {
-                width: 150px; /* Even smaller reels */
-                height: 150px;
+                width: 25vw;
+                height: 25vw;
             }
 
             .number, .word {
-                font-size: 80px; /* Even smaller font for mobile */
+                font-size: 15vw;
             }
 
             #welcomeMessage {
-                font-size: 25px; /* Smaller text size */
+                font-size: 4vw; /* Adjusted for smaller tablets */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slot-machine {
+                flex-direction: column;
+                gap: 2vw;
+            }
+
+            .reel {
+                width: 30vw;
+                height: 30vw;
+            }
+
+            .number, .word {
+                font-size: 18vw;
+            }
+
+            #welcomeMessage {
+                font-size: 5vw;
             }
         }
     </style>
+
 </head>
 <body>
 
@@ -130,80 +155,90 @@
         <div class="reel" id="reel4"></div>
     </div>
 
-    <!-- Hidden paragraph that will be displayed after "JACK" is shown -->
-    <p id="welcomeMessage">Welcome to my world</p>
+    <p id="welcomeMessage" class="typing-active"></p>
 
     <script>
-        // Numbers and the word "JACK"
         const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         const targetWord = ['J', 'A', 'C', 'K'];
+        const welcomeText = "Welcome!| it's good to see you.|~Let's get started ?"; // Using <br> for line breaks
 
-        // Function to get a random number
         function getRandomNumber() {
             return numbers[Math.floor(Math.random() * numbers.length)];
         }
 
-        // Function to get the next letter from "JACK"
         function getNextTargetLetter(index) {
             return targetWord[index % targetWord.length];
         }
 
         let reelInterval;
-        let reelStatus = [false, false, false, false]; // Keep track of whether each reel has shown its letter
-        let letterIndex = 0; // To track the current letter of "JACK" to display
-        let previousNumbers = ['', '', '', '']; // Keep track of previous numbers for each reel
+        let reelStatus = [false, false, false, false];
+        let letterIndex = 0;
+        let previousNumbers = ['', '', '', ''];
 
-        // Function to update the text content of each reel
         function updateReels() {
             const reels = document.querySelectorAll('.reel');
-            
+
             reels.forEach((reel, index) => {
-                // If the reel has not yet shown the letter, show random numbers
                 if (!reelStatus[index]) {
                     let newNumber;
                     do {
-                        newNumber = getRandomNumber(); // Get a new random number
-                    } while (newNumber === previousNumbers[index]); // Ensure the new number is not the same as the previous one
+                        newNumber = getRandomNumber();
+                    } while (newNumber === previousNumbers[index]);
 
-                    reel.innerHTML = `<span class="number">${newNumber}</span>`; // Use span for styling
-                    previousNumbers[index] = newNumber; // Update the previous number for that reel
+                    reel.innerHTML = `<span class="number">${newNumber}</span>`;
+                    previousNumbers[index] = newNumber;
                 }
             });
         }
 
-        // Start updating reels with random numbers at high speed
         reelInterval = setInterval(updateReels, 100);
 
-        // Function to stop the slot at each individual slot
         function stopReelsAtRandom() {
             if (letterIndex < 4) {
-                // Stop the next reel
                 const reels = document.querySelectorAll('.reel');
-                reels[letterIndex].innerHTML = `<span class="word">${targetWord[letterIndex]}</span>`; // Use span for styling
+                reels[letterIndex].innerHTML = `<span class="word">${targetWord[letterIndex]}</span>`;
                 reelStatus[letterIndex] = true;
                 letterIndex++;
             }
         }
 
-        // Start showing "JACK" in each reel after 1.5 seconds, each letter takes at least 1 second
+        function typeText(text, element, delay = 100) {
+            element.innerHTML = ''; 
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    const char = text.charAt(i);
+                    if (char === '|') {
+                        i++;
+                        setTimeout(type, delay * 10);
+                    } else if (char === '~') {
+                        element.innerHTML += '<br>';
+                        i++;
+                        type();
+                    } else {
+                        element.innerHTML += char;
+                        i++;
+                        setTimeout(type, delay);
+                    }
+                }
+            }
+            type();
+        }
+
         setTimeout(() => {
-            // Start displaying "JACK" letters in sequence
             const stopInterval = setInterval(() => {
                 stopReelsAtRandom();
                 if (letterIndex === 4) {
-                    clearInterval(stopInterval); // Stop once all slots have reached 'JACK'
-                    // Display the welcome message after all reels have stopped
+                    clearInterval(stopInterval);
                     setTimeout(() => {
                         const welcomeMessage = document.getElementById('welcomeMessage');
-                        welcomeMessage.style.display = 'block'; // Make the paragraph visible
-                        
-                        // Trigger text-to-speech as soon as the message is visible
-                        const msg = new SpeechSynthesisUtterance('Welcome to my world');
-                        window.speechSynthesis.speak(msg); // Speak the message
-                    }, 500); // Delay the visibility of the paragraph slightly
+                        welcomeMessage.style.display = 'block';
+                        typeText(welcomeText, welcomeMessage, 50);
+                    }, 500);
                 }
-            }, 1000); // Each letter will appear after 1 second
-        }, 1500); // Wait for 1.5 seconds before starting to show "JACK"
+            }, 700);
+        }, 700);
     </script>
 
 </body>
