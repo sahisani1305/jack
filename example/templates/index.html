@@ -24,8 +24,8 @@
         .slot-machine {
             display: flex;
             gap: 30px; /* Increased space between reels */
+            flex-wrap: wrap; /* Allow reels to wrap on smaller screens */
             justify-content: center; /* Center reels horizontally */
-            flex-wrap: nowrap; /* Ensure reels stay in a single row */
         }
 
         .reel {
@@ -96,6 +96,11 @@
 
             #welcomeMessage {
                 font-size: 30px; /* Smaller welcome message font size on mobile */
+            }
+
+            .slot-machine {
+                flex-direction: column; /* Stack the reels vertically on smaller screens */
+                gap: 20px; /* Adjust space between stacked reels */
             }
         }
 
