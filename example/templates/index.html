@@ -24,6 +24,8 @@
         .slot-machine {
             display: flex;
             gap: 30px; /* Increased space between reels */
+            justify-content: center; /* Center reels horizontally */
+            flex-wrap: nowrap; /* Ensure reels stay in a single row */
         }
 
         .reel {
@@ -78,6 +80,38 @@
             100% {
                 opacity: 1;
                 transform: translateY(0); /* End at normal position */
+            }
+        }
+
+        /* Media Queries for mobile responsiveness */
+        @media (max-width: 768px) {
+            .reel {
+                width: 180px; /* Smaller reel size on mobile */
+                height: 180px;
+            }
+
+            .number, .word {
+                font-size: 100px; /* Adjust the font size for mobile */
+            }
+
+            #welcomeMessage {
+                font-size: 30px; /* Smaller welcome message font size on mobile */
+            }
+        }
+
+        /* Media Queries for very small screens (portrait mode on phones) */
+        @media (max-width: 480px) {
+            .reel {
+                width: 150px; /* Even smaller reels */
+                height: 150px;
+            }
+
+            .number, .word {
+                font-size: 80px; /* Even smaller font for mobile */
+            }
+
+            #welcomeMessage {
+                font-size: 25px; /* Smaller text size */
             }
         }
     </style>
