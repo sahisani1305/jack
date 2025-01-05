@@ -151,6 +151,14 @@
             }
 
         }
+
+        #arrow {
+            font-size: 3em; 
+            color: #00ff00; 
+            display: none;
+            margin-top: -0.5em; /* Adjust this to control space between message and arrow */
+            cursor: pointer; /* Add cursor to indicate it's clickable */
+        }
     </style>
 
 </head>
@@ -164,6 +172,9 @@
     </div>
 
     <p id="welcomeMessage" class="typing-active"></p>
+    <a href="/message/">
+        <p id="arrow">→</p>
+    </a>
 
     <script>
         const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -210,7 +221,7 @@
             }
         }
 
-        function typeText(text, element, delay = 100) {
+        function typeText(text, element, delay = 100, callback) {
             element.innerHTML = ''; 
             let i = 0;
 
@@ -229,9 +240,18 @@
                         i++;
                         setTimeout(type, delay);
                     }
+                } else {
+                    callback();  // Call the callback when typing is finished
                 }
             }
             type();
+        }
+
+        function showArrow() {
+            setTimeout(() => {
+                const arrow = document.getElementById('arrow');
+                arrow.style.display = 'inline-block';  // Show the arrow after a small delay
+            }, 500);  // Delay before showing the arrow (adjust this delay as needed)
         }
 
         setTimeout(() => {
@@ -242,7 +262,7 @@
                     setTimeout(() => {
                         const welcomeMessage = document.getElementById('welcomeMessage');
                         welcomeMessage.style.display = 'block';
-                        typeText(welcomeText, welcomeMessage, 50);
+                        typeText(welcomeText, welcomeMessage, 50, showArrow);  // Pass the callback to show the arrow
                     }, 500);
                 }
             }, 700);
