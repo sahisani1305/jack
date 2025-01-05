@@ -56,16 +56,34 @@
             line-height: 1;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
         }
-
         #welcomeMessage {
             font-family: 'Press Start 2P', monospace;
             color: #00ff00;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
             margin-top: 2vw;
             display: none;
-            white-space: pre-wrap; /* Allow line breaks with spaces */
+            white-space: pre-wrap;
             overflow: hidden;
-            line-height: 2; /* Space between lines */
+            line-height: 2;
+            font-size: 1.5em; /* Adjust this value for better scaling */
+        }
+
+        @media (max-width: 1024px) {
+            #welcomeMessage {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #welcomeMessage {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #welcomeMessage {
+                font-size: 1em;
+            }
         }
 
         .typing-active::after {
@@ -95,10 +113,6 @@
                 font-size: 8vw;
             }
 
-            #welcomeMessage {
-                font-size: 2vw; /* Adjusted for tablets */
-            }
-
             .slot-machine {
                 gap: 4vw;
             }
@@ -119,9 +133,6 @@
                 font-size: 15vw;
             }
 
-            #welcomeMessage {
-                font-size: 4vw; /* Adjusted for smaller tablets */
-            }
         }
 
         @media (max-width: 480px) {
@@ -139,9 +150,6 @@
                 font-size: 18vw;
             }
 
-            #welcomeMessage {
-                font-size: 5vw;
-            }
         }
     </style>
 
