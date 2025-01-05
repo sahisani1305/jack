@@ -13,10 +13,10 @@
             color: #00ff00;
             display: flex;
             flex-direction: column;
+            justify-content: center; /* Center vertically */
+            align-items: center; /* Center horizontally */
             height: 100vh;
-            overflow: hidden;
-            justify-content: flex-end; /* Align chat and input box at the bottom */
-            align-items: center;
+            overflow-y: auto; /* Enable scrolling on the entire page */
         }
         .chat-container {
             width: 90%;
@@ -27,22 +27,23 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            flex-grow: 1;
             overflow-y: auto;
-            margin-bottom: 120px; /* Smaller margin for mobile */
+            margin-top: 40px; /* Gap between the top and the chat container */
+            flex-grow: 1;
             box-sizing: border-box;
+            margin-bottom: 100px; /* Create space for the input box */
         }
         .message {
             margin-bottom: 5px;
             display: flex;
             align-items: center;
             max-width: 80%;
-            line-height: 1.2; /* Consistent line height */
+            line-height: 1.2;
             padding: 10px 15px;
             border-radius: 15px;
             font-size: 1.2em;
-            word-wrap: break-word; /* Ensures long text breaks within the container */
-            white-space: pre-wrap; /* Ensures text wraps within the message */
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
         .bot-message, .user-message {
             background-color: #333;
@@ -51,18 +52,18 @@
             border-radius: 15px;
             font-size: 1.2em;
             width: fit-content;
-            line-height: 1.2; /* Consistent line height for both user and bot messages */
+            line-height: 1.2;
         }
         .user-message {
             background-color: #004d00;
             color: #ffffff;
             align-self: flex-end;
             padding: 9px 12px;
-            white-space: pre-wrap; /* Allow white space to break, including manual breaks */
-            word-wrap: break-word; /* Ensure long text wraps */
-            line-height: 1.2; /* Keep line height consistent */
-            max-width: 80%; /* Keep within bounds */
-            word-break: break-word; /* Forces breaking of long words */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.2;
+            max-width: 80%;
+            word-break: break-word;
         }
         .typing-active::after {
             content: "";
@@ -90,13 +91,14 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             position: fixed;
-            bottom: 40px; /* Space from the bottom */
+            bottom: 20px; /* Keep input box with space from bottom */
             z-index: 10;
+            margin-bottom: 10px; /* Add small gap between input box and screen bottom */
         }
         .input-container textarea {
             width: 80%;
-            min-height: 20px; /* Minimum height for initial textarea */
-            max-height: 80px; /* Max height for textarea */
+            min-height: 20px;
+            max-height: 80px;
             padding: 9px 12px;
             font-size: 1em;
             border-radius: 5px;
@@ -105,8 +107,8 @@
             color: #00ff00;
             margin-right: 10px;
             resize: none;
-            line-height: 1.2; /* Adjust line height */
-            overflow-y: auto; /* Adds vertical scroll when needed */
+            line-height: 1.2;
+            overflow-y: auto;
         }
         .input-container button {
             padding: 10px 20px;
@@ -121,30 +123,21 @@
             background: #004d00;
             cursor: pointer;
         }
-        /* Fix for br tag causing spacing issues */
         .message br {
-            margin: 0; /* Remove extra margin from manual line breaks */
-            line-height: 1.2; /* Keep the line height consistent */
+            margin: 0;
+            line-height: 1.2;
         }
         @media (max-width: 768px) {
             .chat-container {
-                height: calc(100vh - 120px); /* More space between chat and input box */
-                margin-bottom: 120px; /* Extra space for input box */
+                height: calc(100vh - 160px); /* Keep the height dynamic for mobile */
             }
             .input-container {
-                bottom: 30px; /* Space from the bottom */
-            }
-            .input-container textarea {
-                width: 70%;
-            }
-            .input-container button {
-                padding: 8px 15px;
+                bottom: 20px;
             }
         }
         @media (min-width: 768px) {
             .chat-container {
-                height: calc(100vh - 120px); /* For larger displays, ensure chat container is scrollable */
-                margin-bottom: 120px; /* More space on larger screens */
+                height: calc(100vh - 200px); /* Keep the height dynamic for larger screens */
             }
         }
     </style>
@@ -224,8 +217,8 @@
                     const textarea = event.target;
                     const cursorPosition = textarea.selectionStart;
                     textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
-                    event.preventDefault(); // Prevents the default behavior of inserting multiple <br> tags
-                    event.stopPropagation(); // Prevents further event propagation
+                    event.preventDefault();
+                    event.stopPropagation();
                 } else {
                     event.preventDefault();
                     sendMessage();
@@ -238,10 +231,8 @@
         });
 
         function resizeTextarea(textarea) {
-            // Reset the height to auto before recalculating
             textarea.style.height = 'auto';
-            // Adjust height based on content but limit to max height
-            const maxHeight = 120;  // Limit height to 120px
+            const maxHeight = 80;
             const height = Math.min(textarea.scrollHeight, maxHeight);
             textarea.style.height = height + 'px';
         }
@@ -259,7 +250,7 @@
                 enableSendButton();
             }
             chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom by default
+            chatContainer.scrollTop = chatContainer.scrollHeight; 
         }
     </script>
 </body>
