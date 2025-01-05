@@ -29,7 +29,7 @@
             justify-content: flex-start;
             flex-grow: 1;
             overflow-y: auto;
-            margin-bottom: 20px; /* Smaller margin for mobile */
+            margin-bottom: 120px; /* Smaller margin for mobile */
             box-sizing: border-box;
         }
         .message {
@@ -90,13 +90,13 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             position: fixed;
-            bottom: 20px; /* Space from the bottom */
+            bottom: 40px; /* Space from the bottom */
             z-index: 10;
         }
         .input-container textarea {
             width: 80%;
             min-height: 20px; /* Minimum height for initial textarea */
-            max-height: 120px; /* Max height for textarea */
+            max-height: 80px; /* Max height for textarea */
             padding: 9px 12px;
             font-size: 1em;
             border-radius: 5px;
@@ -129,10 +129,10 @@
         @media (max-width: 768px) {
             .chat-container {
                 height: calc(100vh - 120px); /* More space between chat and input box */
-                margin-bottom: 80px; /* Extra space for input box */
+                margin-bottom: 120px; /* Extra space for input box */
             }
             .input-container {
-                bottom: 10px; /* Space from the bottom */
+                bottom: 30px; /* Space from the bottom */
             }
             .input-container textarea {
                 width: 70%;
@@ -144,7 +144,7 @@
         @media (min-width: 768px) {
             .chat-container {
                 height: calc(100vh - 120px); /* For larger displays, ensure chat container is scrollable */
-                margin-bottom: 80px; /* More space on larger screens */
+                margin-bottom: 120px; /* More space on larger screens */
             }
         }
     </style>
