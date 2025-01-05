@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>JACK</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -13,65 +12,58 @@
             background: #2b2b2b;
             color: #00ff00;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            text-align: left;
+            justify-content: flex-end; /* Align chat and input box at the bottom */
+            align-items: center;
         }
-
         .chat-container {
             width: 90%;
             max-width: 600px;
             background-color: #1a1a1a;
             border-radius: 10px;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            height: 90vh;
+            justify-content: flex-start;
+            flex-grow: 1;
             overflow-y: auto;
+            margin-bottom: 20px; /* Smaller margin for mobile */
+            box-sizing: border-box;
         }
-
         .message {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             max-width: 80%;
+            line-height: 1.2; /* Consistent line height */
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            word-wrap: break-word; /* Ensures long text breaks within the container */
+            white-space: pre-wrap; /* Ensures text wraps within the message */
         }
-
-        .bot-message {
+        .bot-message, .user-message {
             background-color: #333;
             color: #00ff00;
             padding: 10px 15px;
             border-radius: 15px;
-            font-size: 1.5em;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            max-width: 80%;
+            font-size: 1.2em;
+            width: fit-content;
+            line-height: 1.2; /* Consistent line height for both user and bot messages */
         }
-
         .user-message {
             background-color: #004d00;
             color: #ffffff;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 1.5em;
-            max-width: 80%;
             align-self: flex-end;
+            padding: 9px 12px;
+            white-space: pre-wrap; /* Allow white space to break, including manual breaks */
+            word-wrap: break-word; /* Ensure long text wraps */
+            line-height: 1.2; /* Keep line height consistent */
+            max-width: 80%; /* Keep within bounds */
+            word-break: break-word; /* Forces breaking of long words */
         }
-
-        #welcomeMessage {
-            font-family: 'Press Start 2P', monospace;
-            color: #00ff00;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
-            white-space: pre-wrap;
-            overflow: hidden;
-            line-height: 1.5;
-            font-size: 1.5em;
-            display: none;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-
         .typing-active::after {
             content: "";
             display: inline-block;
@@ -82,52 +74,95 @@
             vertical-align: center;
             margin-left: 0.1ch;
         }
-
         @keyframes blink {
             to {
                 visibility: hidden;
             }
         }
-
-        #arrow {
-            font-size: 3em; 
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 600px;
+            padding: 6px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            position: fixed;
+            bottom: 20px; /* Space from the bottom */
+            z-index: 10;
+        }
+        .input-container textarea {
+            width: 80%;
+            min-height: 20px; /* Minimum height for initial textarea */
+            max-height: 120px; /* Max height for textarea */
+            padding: 9px 12px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #004d00;
+            background: #1a1a1a;
             color: #00ff00;
-            display: none;
-            margin-top: -0.5em;
+            margin-right: 10px;
+            resize: none;
+            line-height: 1.2; /* Adjust line height */
+            overflow-y: auto; /* Adds vertical scroll when needed */
         }
-
-        @media (max-width: 1024px) {
-            #welcomeMessage {
-                font-size: 1.2em;
-            }
+        .input-container button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: 1px solid #004d00;
+            background: grey;
+            color: #ffffff;
+            cursor: not-allowed;
+            border-radius: 5px;
         }
-
+        .input-container button.enabled {
+            background: #004d00;
+            cursor: pointer;
+        }
+        /* Fix for br tag causing spacing issues */
+        .message br {
+            margin: 0; /* Remove extra margin from manual line breaks */
+            line-height: 1.2; /* Keep the line height consistent */
+        }
         @media (max-width: 768px) {
-            #welcomeMessage {
-                font-size: 1em;
+            .chat-container {
+                height: calc(100vh - 120px); /* More space between chat and input box */
+                margin-bottom: 80px; /* Extra space for input box */
             }
-
-            .message {
-                max-width: 100%;
+            .input-container {
+                bottom: 10px; /* Space from the bottom */
+            }
+            .input-container textarea {
+                width: 70%;
+            }
+            .input-container button {
+                padding: 8px 15px;
+            }
+        }
+        @media (min-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 120px); /* For larger displays, ensure chat container is scrollable */
+                margin-bottom: 80px; /* More space on larger screens */
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="chat-container" id="chatContainer">
-        <div class="message bot-message" id="botMessage">
-            <p id="welcomeMessage" class="typing-active"></p>
-        </div>
+    <div class="chat-container" id="chatContainer"></div>
+    <div class="input-container">
+        <textarea id="messageInput" placeholder="Type a message" rows="1"></textarea>
+        <button onclick="sendMessage()" id="sendButton">Send</button>
     </div>
-
     <script>
-        const welcomeText = "Hello!| How can I help you today?|~Please type your question.";
+        const messages = [
+            { sender: 'bot', text: "Hello!| How can I help you today?|~Please type your question." }
+        ];
 
-        function typeText(text, element, delay = 100, callback) {
-            element.innerHTML = ''; 
+        function typeText(text, element, delay = 50, callback) {
+            element.innerHTML = '';
             let i = 0;
-
             function type() {
                 if (i < text.length) {
                     const char = text.charAt(i);
@@ -144,26 +179,88 @@
                         setTimeout(type, delay);
                     }
                 } else {
-                    callback();  // Call the callback when typing is finished
+                    if (callback) callback();
                 }
             }
             type();
         }
 
-        function showArrow() {
-            setTimeout(() => {
-                const arrow = document.getElementById('arrow');
-                arrow.style.display = 'inline-block';  // Show the arrow after a small delay
-            }, 500);  // Delay before showing the arrow (adjust this delay as needed)
+        window.onload = function() {
+            messages.forEach(message => addMessageToChat(message.sender, message.text, true));
+        };
+
+        function enableSendButton() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = false;
+            sendButton.classList.add('enabled');
         }
 
-        // Display the bot's welcome message
-        setTimeout(() => {
-            const welcomeMessage = document.getElementById('welcomeMessage');
-            welcomeMessage.style.display = 'block';
-            typeText(welcomeText, welcomeMessage, 50, showArrow);  // Pass the callback to show the arrow
-        }, 500);
-    </script>
+        function disableSendButton() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            sendButton.classList.remove('enabled');
+        }
 
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            if (messageInput.disabled || sendButton.disabled) return;
+            const message = messageInput.value;
+            if (message) {
+                addMessageToChat('user', message);
+                messageInput.value = '';
+                resizeTextarea(messageInput);
+                disableSendButton();
+                setTimeout(() => {
+                    const botResponse = "I'm a simulated bot response!~I'm still in production";
+                    addMessageToChat('bot', botResponse, true);
+                }, 500);
+            }
+        }
+
+        document.getElementById('messageInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                if (event.shiftKey) {
+                    const textarea = event.target;
+                    const cursorPosition = textarea.selectionStart;
+                    textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
+                    event.preventDefault(); // Prevents the default behavior of inserting multiple <br> tags
+                    event.stopPropagation(); // Prevents further event propagation
+                } else {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('input', function(event) {
+            resizeTextarea(event.target);
+        });
+
+        function resizeTextarea(textarea) {
+            // Reset the height to auto before recalculating
+            textarea.style.height = 'auto';
+            // Adjust height based on content but limit to max height
+            const maxHeight = 120;  // Limit height to 120px
+            const height = Math.min(textarea.scrollHeight, maxHeight);
+            textarea.style.height = height + 'px';
+        }
+
+        function addMessageToChat(sender, message, isTypingEffect = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${sender}-message`;
+            messageElement.style.lineHeight = '1.2';
+            if (isTypingEffect) {
+                disableSendButton();
+                typeText(message, messageElement, 50, enableSendButton);
+            } else {
+                messageElement.innerText = message;
+                enableSendButton();
+            }
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom by default
+        }
+    </script>
 </body>
 </html>
