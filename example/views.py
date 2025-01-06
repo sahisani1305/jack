@@ -9,10 +9,10 @@ from django.http import JsonResponse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Hugging Face API setup
-HUGGINGFACE_API_KEY = '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'  # Replace with your Hugging Face API key
+HUGGINGFACE_API_KEY = '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'  # Replace with your Hugging Face API key
 
 # Set the Hugging Face model (Meta's LLaMA)
-MODEL_NAME = "meta-llama/Llama-3.3-70B-Instruct"  # Choose the appropriate model you want to use
+MODEL_NAME = "meta-llama/Llama-3.2-1B"  # Choose the appropriate model you want to use
 
 # Initialize the model and tokenizer globally to avoid re-initializing on every request
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
