@@ -194,7 +194,8 @@
             sendButton.classList.remove('enabled');
         }
 
-        function sendMessage() {
+        // Updated sendMessage function to call Django view
+        async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const sendButton = document.getElementById('sendButton');
             if (messageInput.disabled || sendButton.disabled) return;
@@ -204,10 +205,15 @@
                 messageInput.value = '';
                 resizeTextarea(messageInput);
                 disableSendButton();
-                setTimeout(() => {
-                    const botResponse = "I'm a simulated bot response!~I'm still in production";
+                try {
+                    const response = await fetch(`/chat/?message=${encodeURIComponent(message)}`);
+                    const data = await response.json();
+                    const botResponse = data.response;
                     addMessageToChat('bot', botResponse, true);
-                }, 500);
+                } catch (error) {
+                    console.error('Error:', error);
+                    addMessageToChat('bot', "Oops, something went wrong!", false);
+                }
             }
         }
 
