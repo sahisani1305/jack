@@ -7,5 +7,6 @@ from example import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('message/', views.message, name='message'),
-    path('chat/', views.chat_view, name='chat'),
+    path('messages/', views.get_messages_from_csv, name='get_messages_from_csv'),
+
     ]

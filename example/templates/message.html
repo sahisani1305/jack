@@ -4,142 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JACK</title>
-    <style>
+    <style>body {
+        font-family: 'Courier New', Courier, monospace;
+        margin: 0;
+        padding: 0;
+        background: #2b2b2b;
+        color: #00ff00;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    
+    .chat-container {
+        width: 90%;
+        max-width: 600px;
+        background-color: #1a1a1a;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+        margin-top: 40px;
+        flex-grow: 1;
+        box-sizing: border-box;
+        margin-bottom: 100px;
+    }
+    
+    .message {
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        max-width: 80%;
+        line-height: 1.2;
+        padding: 10px 15px;
+        border-radius: 15px;
+        font-size: 1rem; /* Using rem for scaling */
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+    
+    .bot-message, .user-message {
+        background-color: #333;
+        color: #00ff00;
+        padding: 10px 15px;
+        border-radius: 15px;
+        font-size: 1rem; /* Using rem for scaling */
+        width: fit-content;
+        line-height: 1.2;
+    }
+    
+    .user-message {
+        background-color: #004d00;
+        color: #ffffff;
+        align-self: flex-end;
+        padding: 9px 12px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 1.2;
+        max-width: 80%;
+    }
+    
+    .typing-active::after {
+        content: "";
+        display: inline-block;
+        background-color: #00ff00;
+        width: 0.15em;
+        height: 1em;
+        animation: blink 1s steps(2, start) infinite;
+        vertical-align: center;
+        margin-left: 0.1ch;
+    }
+    
+    @keyframes blink {
+        to {
+            visibility: hidden;
+        }
+    }
+    
+    .input-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        max-width: 600px;
+        padding: 6px;
+        background-color: #1a1a1a;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        position: fixed;
+        bottom: 20px;
+        z-index: 10;
+        margin-bottom: 10px;
+    }
+    
+    .input-container textarea {
+        width: 80%;
+        min-height: 20px;
+        max-height: 80px;
+        padding: 9px 12px;
+        font-size: 1rem; /* Using rem for scaling */
+        border-radius: 5px;
+        border: 1px solid #004d00;
+        background: #1a1a1a;
+        color: #00ff00;
+        margin-right: 10px;
+        resize: none;
+        line-height: 1.2;
+        overflow-y: auto;
+    }
+    
+    .input-container button {
+        padding: 10px 20px;
+        font-size: 1rem; /* Using rem for scaling */
+        border: 1px solid #004d00;
+        background: grey;
+        color: #ffffff;
+        cursor: not-allowed;
+        border-radius: 5px;
+    }
+    
+    .input-container button.enabled {
+        background: #004d00;
+        cursor: pointer;
+    }
+    
+    .message br {
+        margin: 0;
+        line-height: 1.2;
+    }
+    
+    /* Media Queries for responsive design */
+    @media (max-width: 768px) {
         body {
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 0;
-            background: #2b2b2b;
-            color: #00ff00;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center vertically */
-            align-items: center; /* Center horizontally */
-            height: 100vh;
-            overflow-y: auto; /* Enable scrolling on the entire page */
+            font-size: 0.9rem; /* Smaller font size on mobile */
         }
         .chat-container {
-            width: 90%;
-            max-width: 600px;
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            margin-top: 40px; /* Gap between the top and the chat container */
-            flex-grow: 1;
-            box-sizing: border-box;
-            margin-bottom: 100px; /* Create space for the input box */
+            height: calc(100vh - 160px); /* Adjusted for mobile */
         }
         .message {
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            max-width: 80%;
-            line-height: 1.2;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 1.2em;
-            word-wrap: break-word;
-            white-space: pre-wrap;
+            font-size: 0.9rem; /* Adjust message font size */
         }
-        .bot-message, .user-message {
-            background-color: #333;
-            color: #00ff00;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 1.2em;
-            width: fit-content;
-            line-height: 1.2;
+        .input-container button, .input-container textarea {
+            font-size: 0.9rem; /* Adjust button & textarea font size */
         }
-        .user-message {
-            background-color: #004d00;
-            color: #ffffff;
-            align-self: flex-end;
-            padding: 9px 12px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            line-height: 1.2;
-            max-width: 80%;
-            word-break: break-word;
+    }
+    
+    @media (min-width: 768px) {
+        body {
+            font-size: 1rem; /* Standard font size on larger screens */
         }
-        .typing-active::after {
-            content: "";
-            display: inline-block;
-            background-color: #00ff00;
-            width: 0.15em;
-            height: 1em;
-            animation: blink 1s steps(2, start) infinite;
-            vertical-align: center;
-            margin-left: 0.1ch;
+        .message {
+            font-size: 1rem; /* Standard message font size */
         }
-        @keyframes blink {
-            to {
-                visibility: hidden;
-            }
+        .input-container button, .input-container textarea {
+            font-size: 1rem; /* Standard button & textarea font size */
         }
-        .input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 90%;
-            max-width: 600px;
-            padding: 6px;
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            position: fixed;
-            bottom: 20px; /* Keep input box with space from bottom */
-            z-index: 10;
-            margin-bottom: 10px; /* Add small gap between input box and screen bottom */
-        }
-        .input-container textarea {
-            width: 80%;
-            min-height: 20px;
-            max-height: 80px;
-            padding: 9px 12px;
-            font-size: 1em;
-            border-radius: 5px;
-            border: 1px solid #004d00;
-            background: #1a1a1a;
-            color: #00ff00;
-            margin-right: 10px;
-            resize: none;
-            line-height: 1.2;
-            overflow-y: auto;
-        }
-        .input-container button {
-            padding: 10px 20px;
-            font-size: 1em;
-            border: 1px solid #004d00;
-            background: grey;
-            color: #ffffff;
-            cursor: not-allowed;
-            border-radius: 5px;
-        }
-        .input-container button.enabled {
-            background: #004d00;
-            cursor: pointer;
-        }
-        .message br {
-            margin: 0;
-            line-height: 1.2;
-        }
-        @media (max-width: 768px) {
-            .chat-container {
-                height: calc(100vh - 160px); /* Keep the height dynamic for mobile */
-            }
-            .input-container {
-                bottom: 20px;
-            }
-        }
-        @media (min-width: 768px) {
-            .chat-container {
-                height: calc(100vh - 200px); /* Keep the height dynamic for larger screens */
-            }
-        }
+    }
+    
     </style>
 </head>
 <body>
@@ -149,115 +174,125 @@
         <button onclick="sendMessage()" id="sendButton">Send</button>
     </div>
     <script>
-        const messages = [
-            { sender: 'bot', text: "Hello!| How can I help you today?|~Please type your question." }
-        ];
-
-        function typeText(text, element, delay = 50, callback) {
-            element.innerHTML = '';
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    const char = text.charAt(i);
-                    if (char === '|') {
-                        i++;
-                        setTimeout(type, delay * 10);
-                    } else if (char === '~') {
-                        element.innerHTML += '<br>';
-                        i++;
-                        type();
-                    } else {
-                        element.innerHTML += char;
-                        i++;
-                        setTimeout(type, delay);
-                    }
-                } else {
-                    if (callback) callback();
-                }
-            }
-            type();
-        }
-
-        window.onload = function() {
-            messages.forEach(message => addMessageToChat(message.sender, message.text, true));
-        };
-
-        function enableSendButton() {
-            const sendButton = document.getElementById('sendButton');
-            sendButton.disabled = false;
-            sendButton.classList.add('enabled');
-        }
-
-        function disableSendButton() {
-            const sendButton = document.getElementById('sendButton');
-            sendButton.disabled = true;
-            sendButton.classList.remove('enabled');
-        }
-
-        // Updated sendMessage function to call Django view
-        async function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const sendButton = document.getElementById('sendButton');
-            if (messageInput.disabled || sendButton.disabled) return;
-            const message = messageInput.value;
-            if (message) {
-                addMessageToChat('user', message);
-                messageInput.value = '';
-                resizeTextarea(messageInput);
-                disableSendButton();
-                try {
-                    const response = await fetch(`/chat/?message=${encodeURIComponent(message)}`);
-                    const data = await response.json();
-                    const botResponse = data.response;
-                    addMessageToChat('bot', botResponse, true);
-                } catch (error) {
-                    console.error('Error:', error);
-                    addMessageToChat('bot', "Oops, something went wrong!", false);
-                }
-            }
-        }
-
-        document.getElementById('messageInput').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                if (event.shiftKey) {
-                    const textarea = event.target;
-                    const cursorPosition = textarea.selectionStart;
-                    textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
-                    event.preventDefault();
-                    event.stopPropagation();
-                } else {
-                    event.preventDefault();
-                    sendMessage();
-                }
-            }
-        });
-
-        document.getElementById('messageInput').addEventListener('input', function(event) {
-            resizeTextarea(event.target);
-        });
-
-        function resizeTextarea(textarea) {
-            textarea.style.height = 'auto';
-            const maxHeight = 80;
-            const height = Math.min(textarea.scrollHeight, maxHeight);
-            textarea.style.height = height + 'px';
-        }
-
-        function addMessageToChat(sender, message, isTypingEffect = false) {
-            const chatContainer = document.getElementById('chatContainer');
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${sender}-message`;
-            messageElement.style.lineHeight = '1.2';
-            if (isTypingEffect) {
-                disableSendButton();
-                typeText(message, messageElement, 50, enableSendButton);
+        // Fetch messages from the Django back-end (CSV-based)
+function fetchMessages() {
+    fetch('/chat/messages/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.messages) {
+                data.messages.forEach(message => {
+                    addMessageToChat(message.sender, message.text);
+                });
             } else {
-                messageElement.innerText = message;
-                enableSendButton();
+                console.error('Error: No messages found or failed to fetch data.');
             }
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight; 
+        })
+        .catch(error => console.error('Error fetching messages:', error));
+}
+
+// Initialize the page by loading messages on window load
+window.onload = function() {
+    fetchMessages();  // Load messages when the page loads
+};
+
+// Example function to add messages to the chat container
+function addMessageToChat(sender, message) {
+    const chatContainer = document.getElementById('chatContainer');
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${sender}-message`;
+    messageElement.innerText = message;
+    chatContainer.appendChild(messageElement);
+    chatContainer.scrollTop = chatContainer.scrollHeight;  // Scroll to the bottom to show latest message
+}
+
+// Enable the Send button when input is not empty
+function enableSendButton() {
+    const sendButton = document.getElementById('sendButton');
+    sendButton.disabled = false;
+    sendButton.classList.add('enabled');
+}
+
+// Disable the Send button when input is empty
+function disableSendButton() {
+    const sendButton = document.getElementById('sendButton');
+    sendButton.disabled = true;
+    sendButton.classList.remove('enabled');
+}
+
+// Send the user message
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    if (messageInput.disabled || sendButton.disabled) return;
+    const message = messageInput.value;
+    if (message) {
+        addMessageToChat('user', message);  // Add the user message
+        messageInput.value = '';  // Clear input field
+        resizeTextarea(messageInput);
+        disableSendButton();
+
+        // Simulate bot response after a delay (You can customize this part)
+        setTimeout(() => {
+            const botResponse = "I'm a simulated bot response!~I'm still in production";
+            addMessageToChat('bot', botResponse, true);
+        }, 500);
+    }
+}
+
+// Handle Enter key event for submitting the message
+document.getElementById('messageInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        if (event.shiftKey) {
+            const textarea = event.target;
+            const cursorPosition = textarea.selectionStart;
+            textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            sendMessage();  // Send the message on Enter key press
         }
+    }
+});
+
+// Handle input events to resize the textarea
+document.getElementById('messageInput').addEventListener('input', function(event) {
+    resizeTextarea(event.target);
+});
+
+// Resize the textarea dynamically based on the content
+function resizeTextarea(textarea) {
+    textarea.style.height = 'auto';
+    const maxHeight = 80;
+    const height = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = height + 'px';
+}
+
+// Typing effect for bot response (if needed)
+function typeText(text, element, delay = 50, callback) {
+    element.innerHTML = '';
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            const char = text.charAt(i);
+            if (char === '|') {
+                i++;
+                setTimeout(type, delay * 10);
+            } else if (char === '~') {
+                element.innerHTML += '<br>';
+                i++;
+                type();
+            } else {
+                element.innerHTML += char;
+                i++;
+                setTimeout(type, delay);
+            }
+        } else {
+            if (callback) callback();
+        }
+    }
+    type();
+}
     </script>
 </body>
 </html>

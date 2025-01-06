@@ -1,0 +1,10 @@
+sender,text
+bot,"Hello! How can I assist you today? I can answer questions about various topics."
+user,"Who created you?"
+bot,"I was created by Mohammed Shaik Sahil"
+user,"What is this bot capable of doing?"
+bot,"This bot can help you with simple questions, provide information, and assist with small tasks."
+user,"Can you help with programming questions?"
+bot,"Yes! I can help with Python, JavaScript, HTML, CSS, and more."
+user,"What is the capital of France?"
+bot,"The capital of France is Paris."
