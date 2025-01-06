@@ -5,13 +5,18 @@ def index(request):
 
 def message(request):
     return render(request, 'message.html')
-
 from django.http import JsonResponse
-# Load model directly
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.3-70B-Instruct")
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.3-70B-Instruct")
+# Hugging Face API setup
+HUGGINGFACE_API_KEY = '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'  # Replace with your Hugging Face API key
+
+# Set the Hugging Face model (Meta's LLaMA)
+MODEL_NAME = "meta-llama/Llama-3.3-70B-Instruct"  # Choose the appropriate model you want to use
+
+# Initialize the model and tokenizer globally to avoid re-initializing on every request
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
 
 # Function to query Hugging Face API with user input
 def get_meta_response(user_input):
