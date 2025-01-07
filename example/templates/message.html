@@ -13,10 +13,10 @@
             color: #00ff00;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             height: 100vh;
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         .chat-container {
@@ -32,7 +32,7 @@
             margin-top: 40px;
             flex-grow: 1;
             box-sizing: border-box;
-            margin-bottom: 100px;
+            transition: height 0.3s ease; /* Smooth transition */
         }
 
         .message {
@@ -97,9 +97,10 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
             z-index: 10;
             margin-bottom: 10px;
+            transition: bottom 0.3s ease; /* Smooth transition */
         }
 
         .input-container textarea {
@@ -126,9 +127,8 @@
             color: #ffffff;
             cursor: not-allowed;
             border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace; /* Add this line to match the page font */
+            font-family: 'Courier New', Courier, monospace; /* Match page font */
         }
-
 
         .input-container button.enabled {
             background: #004d00;
@@ -139,19 +139,6 @@
             background-color: #555;
             color: #888;
             cursor: not-allowed;
-        }
-
-        .message br {
-            display: block;
-            height: 1.2em;
-            margin: 0;
-        }
-
-        .message span {
-            display: inline-block;
-            padding-left: 1em;
-            line-height: 1.2;
-            white-space: nowrap;
         }
 
         @media (max-width: 768px) {
@@ -168,7 +155,6 @@
                 font-size: 1rem;
             }
         }
-
     </style>
 </head>
 <body>
@@ -181,20 +167,52 @@
     <script type="text/javascript">
         let botTyping = false; // Flag to track whether bot is typing
         let botMessageChanged = false; // Flag to track bot message changes
-    
+        let isKeyboardVisible = false; // Flag to track keyboard visibility
+
         window.onload = function() {
             addMessageToChat('bot', "Hello!| How can I help you today?|~for testing use: ~hello ~how are you ~what can you do ~who are you ~what is your name ~help ~bye", true);
+            window.addEventListener('resize', handleResize); // Add resize event listener
         };
-    
+
+        // Handle viewport resize (detect keyboard)
+        function handleResize() {
+            const currentHeight = window.innerHeight;
+            if (currentHeight < 500) { // If screen height is less than a threshold (suggesting keyboard is open)
+                if (!isKeyboardVisible) {
+                    isKeyboardVisible = true;
+                    adjustLayoutForKeyboard(true); // Adjust layout when keyboard opens
+                }
+            } else {
+                if (isKeyboardVisible) {
+                    isKeyboardVisible = false;
+                    adjustLayoutForKeyboard(false); // Reset layout when keyboard closes
+                }
+            }
+        }
+
+        // Adjust layout when keyboard is shown/hidden
+        function adjustLayoutForKeyboard(isKeyboardVisible) {
+            const chatContainer = document.getElementById('chatContainer');
+            const inputContainer = document.querySelector('.input-container');
+            
+            if (isKeyboardVisible) {
+                chatContainer.style.height = 'calc(100vh - 120px)'; // Reduce chat container height when keyboard appears
+                inputContainer.style.bottom = '20px'; // Make sure input box floats above
+            } else {
+                chatContainer.style.height = 'calc(100vh - 80px)'; // Reset height when keyboard is hidden
+                inputContainer.style.bottom = '0'; // Reset position
+            }
+        }
+
         // Function to simulate typing effect
         function typeText(text, element, delay = 50, callback) {
             element.innerHTML = '';
             let i = 0;
-    
+
             function type() {
                 if (i < text.length) {
                     const char = text.charAt(i);
-    
+
                     if (char === '|') {
                         i++;
                         setTimeout(type, delay * 10); // Longer delay after "|"
@@ -211,10 +229,10 @@
                     if (callback) callback(); // Call callback when typing is finished
                 }
             }
-    
+
             type();
         }
-    
+
         // Enable Send button
         function enableSendButton() {
             const sendButton = document.getElementById('sendButton');
@@ -222,7 +240,7 @@
             sendButton.classList.add('enabled');
             sendButton.classList.remove('disabled');
         }
-    
+
         // Disable Send button
         function disableSendButton() {
             const sendButton = document.getElementById('sendButton');
@@ -230,22 +248,22 @@
             sendButton.classList.remove('enabled');
             sendButton.classList.add('disabled');
         }
-    
+
         // Send message function
         function sendMessage() {
             if (botTyping || botMessageChanged) {
                 return; // Prevent sending message if bot is typing or message is being updated
             }
-    
+
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value;
-    
+
             if (message) {
                 addMessageToChat('user', message);
                 messageInput.value = '';
-    
+
                 disableSendButton(); // Disable button during the process
-    
+
                 fetch('/get_bot_response/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -268,7 +286,7 @@
                 });
             }
         }
-    
+
         // Event listener to handle Enter key for sending messages
         document.getElementById('messageInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -283,13 +301,13 @@
                 }
             }
         });
-    
+
         // Add message to chat with optional typing effect
         function addMessageToChat(sender, message, isTypingEffect = false) {
             const chatContainer = document.getElementById('chatContainer');
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}-message`;
-    
+
             if (isTypingEffect) {
                 botTyping = true; // Set typing flag to true
                 disableSendButton(); // Disable button during typing
@@ -297,18 +315,18 @@
                     botTyping = false;  // Reset flag after typing
                     enableSendButton(); // Re-enable button after typing completes
                     // Scroll to the latest message
-                    messageElement.scrollIntoView({ behavior: "smooth" });
+                    messageElement.scrollIntoView({ behavior: "smooth", block: "end" });
                 });
             } else {
                 messageElement.innerText = message;
                 // Scroll to the latest message
-                messageElement.scrollIntoView({ behavior: "smooth" });
+                messageElement.scrollIntoView({ behavior: "smooth", block: "end" });
             }
-    
+
             chatContainer.appendChild(messageElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
-    
+
 </body>
 </html>
