@@ -244,80 +244,81 @@
         }
 
         function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const sendButton = document.getElementById('sendButton');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
 
-            // Do nothing if the button or input is disabled
-            if (messageInput.disabled || sendButton.disabled) return;
+    // Do nothing if the button or input is disabled
+    if (messageInput.disabled || sendButton.disabled) return;
 
-            const message = messageInput.value;
-            if (message) {
-                // Add user's message to chat
-                addMessageToChat('user', message);
-                messageInput.value = ''; // Clear input
-                resizeTextarea(messageInput); // Adjust the textarea size
-                disableSendButton(); // Disable the send button while waiting for response
+    const message = messageInput.value;
+    if (message) {
+        // Add user's message to chat
+        addMessageToChat('user', message);
+        messageInput.value = ''; // Clear input
+        resizeTextarea(messageInput); // Adjust the textarea size
+        disableSendButton(); // Disable the send button while waiting for response
 
-                // Prepare the data to send in the request
-                const requestData = JSON.stringify({ message: message });
+        // Prepare the data to send in the request
+        const requestData = JSON.stringify({ message: message });
 
-                // Get the CSRF token from cookies
-                const csrfToken = getCookie('csrftoken');
-                if (!csrfToken) {
-                    console.error('CSRF token not found!');
-                    return; // Exit if CSRF token is not available
-                }
-
-                // Send the POST request with the message data
-                fetch('/get_bot_response/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken  // CSRF token for security
-                    },
-                    body: requestData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to get a valid response from the server');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.response) {
-                        // Display bot response in chat
-                        addMessageToChat('bot', data.response, true);
-                    } else {
-                        console.error('Bot response error:', data.error);
-                        addMessageToChat('bot', 'Sorry, I could not understand that.', true); // Optional fallback message
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    addMessageToChat('bot', 'There was an error processing your request. Please try again.', true); // Error message for user
-                })
-                .finally(() => {
-                    // Re-enable send button regardless of response or error
-                    enableSendButton();
-                });
-            }
+        // Get the CSRF token from cookies (make sure it's available in the cookies)
+        const csrfToken = getCookie('csrftoken');  // This fetches the CSRF token from cookies
+        if (!csrfToken) {
+            console.error('CSRF token not found!');
+            return; // Exit if CSRF token is not available
         }
 
-        // Helper function to get CSRF token (necessary for POST requests in Django)
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+        // Send the POST request with the message data
+        fetch('https://message.theliteraryclubnsakcet.in/get_bot_response/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken  // Add CSRF token to headers
+            },
+            body: requestData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to get a valid response from the server');
             }
-            return cookieValue;
+            return response.json();
+        })
+        .then(data => {
+            if (data.response) {
+                // Display bot response in chat
+                addMessageToChat('bot', data.response, true);
+            } else {
+                console.error('Bot response error:', data.error);
+                addMessageToChat('bot', 'Sorry, I could not understand that.', true); // Optional fallback message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessageToChat('bot', 'There was an error processing your request. Please try again.', true); // Error message for user
+        })
+        .finally(() => {
+            // Re-enable send button regardless of response or error
+            enableSendButton();
+        });
+    }
+}
+
+// Helper function to get the CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
         }
+    }
+    return cookieValue;
+}
+
 
         document.getElementById('messageInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
