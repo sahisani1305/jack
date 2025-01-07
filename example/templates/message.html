@@ -13,7 +13,7 @@
             color: #00ff00;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             height: 100vh;
             overflow-y: auto;
@@ -32,7 +32,7 @@
             margin-top: 40px;
             flex-grow: 1;
             box-sizing: border-box;
-            margin-bottom: 20px; /* Adjusted to provide space for input */
+            margin-bottom: 100px;
         }
 
         .message {
@@ -126,8 +126,9 @@
             color: #ffffff;
             cursor: not-allowed;
             border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', Courier, monospace; /* Add this line to match the page font */
         }
+
 
         .input-container button.enabled {
             background: #004d00;
@@ -157,7 +158,6 @@
             body {
                 font-size: 0.9rem;
             }
-
             .chat-container {
                 height: calc(100vh - 160px);
             }
@@ -181,20 +181,20 @@
     <script type="text/javascript">
         let botTyping = false; // Flag to track whether bot is typing
         let botMessageChanged = false; // Flag to track bot message changes
-
+    
         window.onload = function() {
             addMessageToChat('bot', "Hello!| How can I help you today?|~for testing use: ~hello ~how are you ~what can you do ~who are you ~what is your name ~help ~bye", true);
         };
-
+    
         // Function to simulate typing effect
         function typeText(text, element, delay = 50, callback) {
             element.innerHTML = '';
             let i = 0;
-
+    
             function type() {
                 if (i < text.length) {
                     const char = text.charAt(i);
-
+    
                     if (char === '|') {
                         i++;
                         setTimeout(type, delay * 10); // Longer delay after "|"
@@ -211,10 +211,10 @@
                     if (callback) callback(); // Call callback when typing is finished
                 }
             }
-
+    
             type();
         }
-
+    
         // Enable Send button
         function enableSendButton() {
             const sendButton = document.getElementById('sendButton');
@@ -222,7 +222,7 @@
             sendButton.classList.add('enabled');
             sendButton.classList.remove('disabled');
         }
-
+    
         // Disable Send button
         function disableSendButton() {
             const sendButton = document.getElementById('sendButton');
@@ -230,22 +230,22 @@
             sendButton.classList.remove('enabled');
             sendButton.classList.add('disabled');
         }
-
+    
         // Send message function
         function sendMessage() {
             if (botTyping || botMessageChanged) {
                 return; // Prevent sending message if bot is typing or message is being updated
             }
-
+    
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value;
-
+    
             if (message) {
                 addMessageToChat('user', message);
                 messageInput.value = '';
-
+    
                 disableSendButton(); // Disable button during the process
-
+    
                 fetch('/get_bot_response/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -268,7 +268,7 @@
                 });
             }
         }
-
+    
         // Event listener to handle Enter key for sending messages
         document.getElementById('messageInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -283,29 +283,32 @@
                 }
             }
         });
-
+    
         // Add message to chat with optional typing effect
         function addMessageToChat(sender, message, isTypingEffect = false) {
             const chatContainer = document.getElementById('chatContainer');
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}-message`;
-
+    
             if (isTypingEffect) {
                 botTyping = true; // Set typing flag to true
                 disableSendButton(); // Disable button during typing
                 typeText(message, messageElement, 50, () => {
                     botTyping = false;  // Reset flag after typing
                     enableSendButton(); // Re-enable button after typing completes
-                    messageElement.scrollIntoView({ behavior: "smooth" }); // Scroll to latest message
+                    // Scroll to the latest message
+                    messageElement.scrollIntoView({ behavior: "smooth" });
                 });
             } else {
                 messageElement.innerText = message;
-                messageElement.scrollIntoView({ behavior: "smooth" }); // Scroll to latest message
+                // Scroll to the latest message
+                messageElement.scrollIntoView({ behavior: "smooth" });
             }
-
+    
             chatContainer.appendChild(messageElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
+    
 </body>
 </html>
