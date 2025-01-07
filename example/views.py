@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 
@@ -15,7 +15,7 @@ KEY_PAIR_RESPONSES = {
     "help": "I'm here to help you! Just ask me anything."
 }
 
-@csrf_protect
+@csrf_exempt
 @require_POST
 def get_bot_response(request):
     try:
