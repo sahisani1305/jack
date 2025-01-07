@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'example'
 ]
 
@@ -48,9 +49,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Add this middleware
 ]
+CORS_ALLOW_ALL_ORIGINS = [
+    'http://localhost:3000',
+    'https://jack.theliteraryclubnsakcet.in'
+]
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'api.urls'
+
+CSRF_COOKIE_SECURE = False  # Set to True for production if using HTTPS
+CSRF_TRUSTED_ORIGINS = [
+    'https://jack.theliteraryclubnsakcet.in',  # Add your frontend domain here
+]
 
 TEMPLATES = [
     {
