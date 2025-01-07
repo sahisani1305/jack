@@ -6,7 +6,7 @@ import json
 
 # Predefined key-pair values for responses
 KEY_PAIR_RESPONSES = {
-    "hello": "Hello! How can I assist you today?",
+    "hello": "Hello!| How can I help you today?",
     "how are you": "I'm just a bot, but I'm doing great, thank you!",
     "what can you do": "I'm here to help you with any questions you have. Just ask me anything!",
     "who are you": "I'm a bot created by Mohammed Shaik Sahil. Nice to meet you!",
