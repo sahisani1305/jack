@@ -15,7 +15,7 @@ KEY_PAIR_RESPONSES = {
     "help": "I'm here to help you! Just ask me anything."
 }
 
-@csrf_protect
+
 @require_POST
 def get_bot_response(request):
     try:
