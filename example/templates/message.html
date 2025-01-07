@@ -13,10 +13,10 @@
             color: #00ff00;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         .chat-container {
@@ -32,7 +32,7 @@
             margin-top: 40px;
             flex-grow: 1;
             box-sizing: border-box;
-            transition: height 0.3s ease; /* Smooth transition */
+            margin-bottom: 100px;
         }
 
         .message {
@@ -97,10 +97,10 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             position: fixed;
-            bottom: 0;
+            bottom: 20px;
             z-index: 10;
             margin-bottom: 10px;
-            transition: bottom 0.3s ease; /* Smooth transition */
+            transition: bottom 0.3s ease;
         }
 
         .input-container textarea {
@@ -127,7 +127,7 @@
             color: #ffffff;
             cursor: not-allowed;
             border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace; /* Match page font */
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .input-container button.enabled {
@@ -139,6 +139,19 @@
             background-color: #555;
             color: #888;
             cursor: not-allowed;
+        }
+
+        .message br {
+            display: block;
+            height: 1.2em;
+            margin: 0;
+        }
+
+        .message span {
+            display: inline-block;
+            padding-left: 1em;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         @media (max-width: 768px) {
@@ -165,42 +178,38 @@
     </div>
 
     <script type="text/javascript">
-        let botTyping = false; // Flag to track whether bot is typing
-        let botMessageChanged = false; // Flag to track bot message changes
-        let isKeyboardVisible = false; // Flag to track keyboard visibility
+        let botTyping = false;
+        let botMessageChanged = false;
+        let isKeyboardVisible = false;
 
         window.onload = function() {
             addMessageToChat('bot', "Hello!| How can I help you today?|~for testing use: ~hello ~how are you ~what can you do ~who are you ~what is your name ~help ~bye", true);
-            window.addEventListener('resize', handleResize); // Add resize event listener
+            window.addEventListener('resize', handleResize);
         };
 
         // Handle viewport resize (detect keyboard)
         function handleResize() {
             const currentHeight = window.innerHeight;
-            if (currentHeight < 500) { // If screen height is less than a threshold (suggesting keyboard is open)
+            if (currentHeight < 500) { // If screen height is less than a threshold (keyboard probably open)
                 if (!isKeyboardVisible) {
                     isKeyboardVisible = true;
-                    adjustLayoutForKeyboard(true); // Adjust layout when keyboard opens
+                    adjustInputBoxPosition(true); // Adjust position when keyboard is open
                 }
             } else {
                 if (isKeyboardVisible) {
                     isKeyboardVisible = false;
-                    adjustLayoutForKeyboard(false); // Reset layout when keyboard closes
+                    adjustInputBoxPosition(false); // Reset position when keyboard is closed
                 }
             }
         }
 
-        // Adjust layout when keyboard is shown/hidden
-        function adjustLayoutForKeyboard(isKeyboardVisible) {
-            const chatContainer = document.getElementById('chatContainer');
+        // Adjust input box position when keyboard is open or closed
+        function adjustInputBoxPosition(isKeyboardVisible) {
             const inputContainer = document.querySelector('.input-container');
-            
             if (isKeyboardVisible) {
-                chatContainer.style.height = 'calc(100vh - 120px)'; // Reduce chat container height when keyboard appears
-                inputContainer.style.bottom = '20px'; // Make sure input box floats above
+                inputContainer.style.bottom = '20px'; // Position just above the keyboard
             } else {
-                chatContainer.style.height = 'calc(100vh - 80px)'; // Reset height when keyboard is hidden
-                inputContainer.style.bottom = '0'; // Reset position
+                inputContainer.style.bottom = '20px'; // Reset position when keyboard is closed
             }
         }
 
@@ -252,7 +261,7 @@
         // Send message function
         function sendMessage() {
             if (botTyping || botMessageChanged) {
-                return; // Prevent sending message if bot is typing or message is being updated
+                return;
             }
 
             const messageInput = document.getElementById('messageInput');
@@ -267,22 +276,19 @@
                 fetch('/get_bot_response/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })  // Send user message as JSON
+                    body: JSON.stringify({ message: message })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.response) {
-                        addMessageToChat('bot', data.response, true);  // Show bot message with typing effect
+                        addMessageToChat('bot', data.response, true);
                     } else {
-                        addMessageToChat('bot', 'Error: No response from bot', true); // Error handling
+                        addMessageToChat('bot', 'Error: No response from bot', true);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    addMessageToChat('bot', 'There was an error. Please try again.', true); // Handle network errors
-                })
-                .finally(() => {
-                    // The button remains disabled while typing effect is in progress
+                    addMessageToChat('bot', 'There was an error. Please try again.', true);
                 });
             }
         }
@@ -312,21 +318,18 @@
                 botTyping = true; // Set typing flag to true
                 disableSendButton(); // Disable button during typing
                 typeText(message, messageElement, 50, () => {
-                    botTyping = false;  // Reset flag after typing
-                    enableSendButton(); // Re-enable button after typing completes
-                    // Scroll to the latest message
-                    messageElement.scrollIntoView({ behavior: "smooth", block: "end" });
+                    botTyping = false;
+                    enableSendButton();
+                    messageElement.scrollIntoView({ behavior: "smooth" });
                 });
             } else {
                 messageElement.innerText = message;
-                // Scroll to the latest message
-                messageElement.scrollIntoView({ behavior: "smooth", block: "end" });
+                messageElement.scrollIntoView({ behavior: "smooth" });
             }
 
             chatContainer.appendChild(messageElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
-
 </body>
 </html>
