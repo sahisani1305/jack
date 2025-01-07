@@ -119,12 +119,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Allow CSRF cookies across subdomains
-CSRF_COOKIE_DOMAIN = ".theliteraryclubnsakcet.in"  # Leading dot for all subdomains
-CSRF_COOKIE_SAMESITE = "None"  # Required for cross-subdomain cookies
-CSRF_COOKIE_SECURE = True  # Only for HTTPS (important for production)
-
-CORS_ALLOWED_ORIGINS = [
-    "https://jack.theliteraryclubnsakcet.in",  # Frontend subdomain
-]
