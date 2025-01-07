@@ -13,7 +13,7 @@
             color: #00ff00;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             height: 100vh;
             overflow-y: auto;
@@ -32,7 +32,7 @@
             margin-top: 40px;
             flex-grow: 1;
             box-sizing: border-box;
-            margin-bottom: 100px;
+            margin-bottom: 20px; /* Adjusted to provide space for input */
         }
 
         .message {
@@ -126,6 +126,7 @@
             color: #ffffff;
             cursor: not-allowed;
             border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .input-container button.enabled {
@@ -156,6 +157,7 @@
             body {
                 font-size: 0.9rem;
             }
+
             .chat-container {
                 height: calc(100vh - 160px);
             }
@@ -181,7 +183,7 @@
         let botMessageChanged = false; // Flag to track bot message changes
 
         window.onload = function() {
-            addMessageToChat('bot', "Hello!| How can I help you today?|~for testing use: *hello *how are you *what can you do *who are you *what is your name *help *bye", true);
+            addMessageToChat('bot', "Hello!| How can I help you today?|~for testing use: ~hello ~how are you ~what can you do ~who are you ~what is your name ~help ~bye", true);
         };
 
         // Function to simulate typing effect
@@ -294,9 +296,11 @@
                 typeText(message, messageElement, 50, () => {
                     botTyping = false;  // Reset flag after typing
                     enableSendButton(); // Re-enable button after typing completes
+                    messageElement.scrollIntoView({ behavior: "smooth" }); // Scroll to latest message
                 });
             } else {
                 messageElement.innerText = message;
+                messageElement.scrollIntoView({ behavior: "smooth" }); // Scroll to latest message
             }
 
             chatContainer.appendChild(messageElement);
