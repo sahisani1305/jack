@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST
 import json
 
@@ -15,29 +15,61 @@ KEY_PAIR_RESPONSES = {
     "help": "I'm here to help you! Just ask me anything."
 }
 
+# Secret key for admin mode
+SECRET_KEY = "admin123"  # You can change this to your desired key.
+
+# Store user session info (this should be persisted in a session or a database in production)
+user_admin_state = {}  # User state for tracking admin mode and attempts
+
 @csrf_exempt
 @require_POST
 def get_bot_response(request):
     try:
-        # Get the message sent from the frontend
         data = json.loads(request.body)
         user_message = data.get('message')
+        user_id = data.get('user_id')  # Assuming you send a user_id for each session
 
-        # Normalize the message (convert to lowercase to make it case-insensitive)
+        # Initialize user state if it doesn't exist
+        if user_id not in user_admin_state:
+            user_admin_state[user_id] = {
+                'is_admin': False,
+                'attempts': 0
+            }
+
+        # Handle the /admin and /end functionality
+        if user_message.startswith("/admin"):
+            # If user is already in admin mode, do not ask for the key again
+            if user_admin_state[user_id]['is_admin']:
+                return JsonResponse({'response': "You are already in admin mode."})
+            # Set user to admin mode and ask for the secret key
+            user_admin_state[user_id]['is_admin'] = True
+            user_admin_state[user_id]['attempts'] = 0
+            return JsonResponse({'response': "Please enter the secret key to enter admin mode."})
+        
+        elif user_message.startswith("/end") and user_admin_state[user_id]['is_admin']:
+            # If user is in admin mode and types /end, exit admin mode
+            user_admin_state[user_id]['is_admin'] = False
+            return JsonResponse({'response': "You have exited admin mode."})
+        
+        # If in admin mode, check if the correct secret key is provided
+        if user_admin_state[user_id]['is_admin']:
+            if user_message == SECRET_KEY:
+                # Do not set is_admin to False here; just acknowledge the admin access
+                return JsonResponse({'response': "Hey admin, nice to meet you!"})
+            else:
+                user_admin_state[user_id]['attempts'] += 1
+                # If user fails 3 times, exit admin mode
+                if user_admin_state[user_id]['attempts'] >= 3:
+                    user_admin_state[user_id]['is_admin'] = False
+                    return JsonResponse({'response': "Admin mode failed. You have been logged out."})
+                return JsonResponse({'response': f"Incorrect secret key. You have {3 - user_admin_state[user_id]['attempts']} attempts left."})
+        
+        # Normal bot functionality (non-admin mode)
         user_message = user_message.strip().lower()
-
-        # Default response in case no match is found
-        bot_response = "Sorry, I couldn't understand that. Could you please rephrase?"
-
-        # Check if the user message matches any predefined key
-        if user_message in KEY_PAIR_RESPONSES:
-            bot_response = KEY_PAIR_RESPONSES[user_message]
-
-        # Return the response in JSON format
+        bot_response = KEY_PAIR_RESPONSES.get(user_message, "Sorry, I couldn't understand that. Could you please rephrase?")
         return JsonResponse({'response': bot_response})
 
     except Exception as e:
-        # In case of any errors, send a failure response
         return JsonResponse({'error': 'An error occurred while processing your request. Please try again later.'}, status=500)
 
 
