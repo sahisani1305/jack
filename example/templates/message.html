@@ -6,174 +6,229 @@
     <title>JACK</title>
     <style>
         body {
-    font-family: 'Courier New', Courier, monospace;
-    margin: 0;
-    padding: 0;
-    background: #2b2b2b;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background: #2b2b2b;
+            color: #00ff00;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Navbar styles */
+nav {
+    display: flex;
+    justify-content: center; /* Center the logo horizontally */
+    align-items: center; /* Center the logo vertically */
+    padding: 0.5em 1em;  /* Very reduced padding for a smaller navbar */
+    background-color: #111; /* Dark background for navbar */
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+/* Logo (JACK) in Navbar */
+.navbar-logo {
+    font-family: 'Press Start 2P', monospace;
     color: #00ff00;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100vh;
-    overflow-y: auto; /* Allow the body to scroll */
-}
-
-.chat-container {
-    width: 90%;
-    max-width: 600px;
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    overflow-y: auto;
-    position: absolute;
-    bottom: 95px; /* Increased gap from input box */
-    max-height: calc(100vh - 180px); /* Adjusted for gap and input box height */
-    z-index: 5;
-}
-
-.message {
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    max-width: 80%;
-    line-height: 1.2;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-size: 1rem;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-}
-
-.bot-message, .user-message {
-    background-color: #333;
-    color: #00ff00;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-size: 1rem;
-    width: fit-content;
-    line-height: 1.2;
-}
-
-.user-message {
-    background-color: #004d00;
-    color: #ffffff;
-    align-self: flex-end;
-    padding: 9px 12px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.2;
-    max-width: 80%;
-}
-
-.typing-active::after {
-    content: "";
-    display: inline-block;
-    background-color: #00ff00;
-    width: 0.15em;
-    height: 1em;
-    animation: blink 1s steps(2, start) infinite;
-    vertical-align: center;
-    margin-left: 0.1ch;
-}
-
-@keyframes blink {
-    to {
-        visibility: hidden;
-    }
-}
-
-.input-container {
+    font-size: 1.5em; /* Smaller font size for compactness */
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Neon text effect */
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90%;
-    max-width: 600px;
-    padding: 6px;
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    position: fixed;
-    bottom: 20px;
-    z-index: 10;
-    margin-bottom: 10px;
-    transition: bottom 0.3s ease;
+    flex-grow: 1; /* This will ensure the logo takes up available space */
 }
 
-.input-container textarea {
-    width: 80%;
-    min-height: 20px;
-    max-height: 80px;
-    padding: 9px 12px;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: 1px solid #004d00;
-    background: #1a1a1a;
+.reel-container {
+    display: flex;
+    gap: 1vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.reel {
+    width: 3.5vw; /* Reduced size for compactness */
+    height: 3.5vw;
+    max-width: 50px; /* Max size for small screens */
+    max-height: 50px;
+    background-color: rgba(30, 30, 30, 0.9);
+    border: 3px solid #00ff00;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+}
+
+.reel span {
+    font-size: 2vw; /* Smaller text size for compact logo */
+    font-weight: bold;
     color: #00ff00;
-    margin-right: 10px;
-    resize: none;
-    line-height: 1.2;
-    overflow-y: auto;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Neon text effect */
 }
 
-.input-container button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: 1px solid #004d00;
-    background: grey;
-    color: #ffffff;
-    cursor: not-allowed;
-    border-radius: 5px;
-    font-family: 'Courier New', Courier, monospace;
-}
+        /* Chat container styles */
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            overflow-y: auto;
+            position: absolute;
+            top: 80px; /* Adjusted to ensure space for navbar */
+            bottom: 95px;
+            max-height: calc(100vh - 180px);
+            z-index: 5;
+        }
 
-.input-container button.enabled {
-    background: #004d00;
-    cursor: pointer;
-}
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 600px;
+            padding: 6px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            position: fixed;
+            bottom: 20px;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
 
-.input-container button.disabled {
-    background-color: #555;
-    color: #888;
-    cursor: not-allowed;
-}
+        .input-container textarea {
+            width: 80%;
+            min-height: 20px;
+            max-height: 80px;
+            padding: 9px 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #004d00;
+            background: #1a1a1a;
+            color: #00ff00;
+            margin-right: 10px;
+            resize: none;
+            line-height: 1.2;
+            overflow-y: auto;
+        }
 
-.message br {
-    display: block;
-    height: 1.2em;
-    margin: 0;
-}
+        .input-container button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: 1px solid #004d00;
+            background: grey;
+            color: #ffffff;
+            cursor: not-allowed;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+        }
 
-.message span {
-    display: inline-block;
-    padding-left: 1em;
-    line-height: 1.2;
-    white-space: nowrap;
-}
+        .input-container button.enabled {
+            background: #004d00;
+            cursor: pointer;
+        }
 
-@media (max-width: 768px) {
-    body {
-        font-size: 0.9rem;
-    }
-    .chat-container {
-        max-height: calc(100vh - 160px); /* Adjust for smaller screen sizes */
-    }
-}
+        .input-container button.disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
 
-@media (min-width: 768px) {
-    body {
-        font-size: 1rem;
-    }
-}
+        /* Messages Styles */
+        .message {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            max-width: 80%;
+            line-height: 1.2;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 1rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .bot-message, .user-message {
+            background-color: #333;
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 1rem;
+            width: fit-content;
+            line-height: 1.2;
+        }
+
+        .user-message {
+            background-color: #004d00;
+            color: #ffffff;
+            align-self: flex-end;
+            padding: 9px 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.2;
+            max-width: 80%;
+        }
+
+        .typing-active::after {
+            content: "";
+            display: inline-block;
+            background-color: #00ff00;
+            width: 0.15em;
+            height: 1em;
+            animation: blink 1s steps(2, start) infinite;
+            vertical-align: center;
+            margin-left: 0.1ch;
+        }
+
+        @keyframes blink {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 0.9rem;
+            }
+            .chat-container {
+                max-height: calc(100vh - 160px);
+            }
+        }
 
     </style>
 </head>
 <body>
+
+    <!-- Navbar (copied from previous code) -->
+    <!-- Navbar (copied from previous code) -->
+<nav>
+    <div class="navbar-logo">
+        <div class="reel-container">
+            <div class="reel"><span>J</span></div>
+            <div class="reel"><span>A</span></div>
+            <div class="reel"><span>C</span></div>
+            <div class="reel"><span>K</span></div>
+        </div>
+    </div>
+</nav>
+
+    <!-- Chat Container -->
     <div class="chat-container" id="chatContainer"></div>
+
+    <!-- Input Container -->
     <div class="input-container">
         <textarea id="messageInput" placeholder="Type a message" rows="1"></textarea>
         <button onclick="sendMessage()" id="sendButton" class="enabled">Send</button>
