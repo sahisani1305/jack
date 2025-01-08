@@ -22,10 +22,12 @@
         /* Navbar (Header) Style */
 nav {
     display: flex;
-    justify-content: center; /* Center the logo horizontally */
-    align-items: center; /* Center the logo vertically */
-    padding: 0.5em 1em;  /* Very reduced padding for a smaller navbar */
-    background-color: #111; /* Dark background for navbar */
+    justify-content: center;  /* Center the navbar content horizontally */
+    align-items: center;      /* Center the logo vertically */
+    padding-top: 0.5em;       /* Add space on top */
+    padding-bottom: 0.5em;    /* Add space on bottom */
+    margin: 0;
+    background-color: #111;
     width: 100%;
     position: fixed;
     top: 0;
@@ -37,16 +39,18 @@ nav {
 .navbar-logo {
     font-family: 'Press Start 2P', monospace;
     color: #00ff00;
-    font-size: 1.5em; /* Smaller font size for compactness */
+    font-size: 2em;
     text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
     display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Make sure the logo doesn't overflow in smaller screens */
+    justify-content: center; /* Center the logo content horizontally */
+    align-items: center;     /* Center the logo vertically */
     text-align: center;
+    width: auto;             /* Prevent logo from taking full width */
+    margin: 0;
+    padding: 0;
 }
 
-
+        /* Reel Container */
         .reel-container {
             display: flex;
             gap: 1vw;
@@ -54,10 +58,11 @@ nav {
             align-items: center;
         }
 
+        /* Reel */
         .reel {
-            width: 3.5vw; /* Reduced size for compactness */
-            height: 3.5vw;
-            max-width: 50px; /* Max size for small screens */
+            width: 3.5vw; /* Default width */
+            height: 3.5vw; /* Default height */
+            max-width: 50px;
             max-height: 50px;
             background-color: rgba(30, 30, 30, 0.9);
             border: 3px solid #00ff00;
@@ -69,11 +74,26 @@ nav {
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
         }
 
-        .reel span {
-            font-size: 2vw; /* Smaller text size for compact logo */
-            font-weight: bold;
-            color: #00ff00;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        /* Mobile adjustments to maintain rectangular shape */
+        @media (max-width: 768px) {
+            .reel {
+                width: 45px;  /* Set a fixed width */
+                height: 35px; /* Set a fixed height */
+            }
+            /* Adjusting the chat-container max height and input box spacing */
+            .chat-container {
+                max-height: calc(100vh - 140px); /* Reduce bottom space */
+            }
+            .input-container {
+                bottom: 10px; /* Reduce spacing between chat container and input box */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .reel {
+                width: 3.5vw;
+                height: 3.5vw;
+            }
         }
 
         .chat-container {
@@ -88,8 +108,8 @@ nav {
             box-sizing: border-box;
             overflow-y: auto;
             position: absolute;
-            bottom: 95px; /* Increased gap from input box */
-            max-height: calc(100vh - 180px); /* Adjusted for gap and input box height */
+            bottom: 95px;
+            max-height: calc(100vh - 180px);
             z-index: 5;
         }
 
@@ -217,7 +237,7 @@ nav {
                 font-size: 0.9rem;
             }
             .chat-container {
-                max-height: calc(100vh - 160px); /* Adjust for smaller screen sizes */
+                max-height: calc(100vh - 160px);
             }
         }
 
@@ -259,11 +279,10 @@ nav {
             window.addEventListener('resize', handleResize);
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.addEventListener('scroll', function () {
-                // Check if the user is scrolling up (away from the bottom of the chat container)
                 if (chatContainer.scrollTop + chatContainer.clientHeight < chatContainer.scrollHeight) {
-                    userIsScrolling = true; // User is scrolling manually
+                    userIsScrolling = true;
                 } else {
-                    userIsScrolling = false; // User is at the bottom
+                    userIsScrolling = false;
                 }
             });
         };
@@ -383,35 +402,32 @@ nav {
         });
     
         function addMessageToChat(sender, message, isTypingEffect = false) {
-            const chatContainer = document.getElementById('chatContainer');
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${sender}-message`;
-    
-            if (isTypingEffect) {
-                botTyping = true;
-                disableSendButton();
-                typeText(message, messageElement, 50, () => {
-                    botTyping = false;
-                    enableSendButton();
-                    // Only scroll to the latest message if the user isn't scrolling
-                    if (!userIsScrolling) {
-                        messageElement.scrollIntoView({ behavior: "smooth" });
-                    }
-                });
-            } else {
-                messageElement.innerText = message;
-                // Only scroll to the latest message if the user isn't scrolling
-                if (!userIsScrolling) {
-                    messageElement.scrollIntoView({ behavior: "smooth" });
-                }
-            }
-    
-            chatContainer.appendChild(messageElement);
-            // Only scroll to the bottom of the chat if the user isn't manually scrolling
+    const chatContainer = document.getElementById('chatContainer');
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${sender}-message`;
+
+    if (isTypingEffect) {
+        botTyping = true;
+        disableSendButton();
+        typeText(message, messageElement, 50, () => {
+            botTyping = false;
+            enableSendButton();
+            // Scroll to bottom of chat container only if user isn't scrolling
             if (!userIsScrolling) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
+        });
+    } else {
+        messageElement.innerText = message;
+        // Scroll to bottom of chat container only if user isn't scrolling
+        if (!userIsScrolling) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
+    }
+
+    chatContainer.appendChild(messageElement);
+}
+
     </script>
-    </body>
+</body>
 </html>
