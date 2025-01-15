@@ -12,7 +12,14 @@ KEY_PAIR_RESPONSES = {
     "who are you": "I'm a bot created by Mohammed Shaik Sahil. Nice to meet you!",
     "bye": "Goodbye! Have a great day!",
     "what is your name": "I'm a bot, you can call me Jack.",
-    "help": "I'm here to help you! Just ask me anything."
+    "help": "I'm here to help you! Just ask me anything.",
+    "/show": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/clear": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/end": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/register": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/stop": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/cmd": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
+    "/cmd-admin": "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.",
 }
 
 # Secret key for admin mode
@@ -70,7 +77,7 @@ def get_bot_response(request):
 
         # Normal bot functionality (non-admin mode)
         user_message = user_message.strip().lower()
-        bot_response = KEY_PAIR_RESPONSES.get(user_message, "Sorry, I couldn't understand that. Could you please rephrase?")
+        bot_response = KEY_PAIR_RESPONSES.get(user_message, "This is just a preview of the bot due to limited functionality. Please ask me only the predefined questions.")
         return JsonResponse({'response': bot_response})
 
     except Exception as e:
